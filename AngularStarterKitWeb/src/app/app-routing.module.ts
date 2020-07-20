@@ -11,6 +11,7 @@ import { ExportreportviewerComponent } from './export/exportreportviewer/exportr
 import { DashboardComponent, DashboardDesignerComponent, IzendaHomeComponent, IzendaSettingComponent, ReportCustomFilterComponent,
     ReportDesignerComponent, ReportListComponent, ReportPartComponent,
     AdvancedReportPartComponent, ReportViewerComponent, DashboardViewerComponent } from './izendacomponents/index';
+import { CreateTenantComponent } from './createtenant/createtenant.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,6 +29,9 @@ const appRoutes: Routes = [
   { path: 'izenda/dashboardviewer', component: DashboardViewerComponent, canActivate: [AuthGuard]},
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
+
+  // create user / tenant
+  { path: 'createtenant', component: CreateTenantComponent, canActivate: [AuthGuard]},
 
   // export route
    { path: 'viewer/reportpart/:id', component: ExportComponent},
