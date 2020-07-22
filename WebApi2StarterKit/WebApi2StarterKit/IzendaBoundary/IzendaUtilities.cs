@@ -1,14 +1,35 @@
-﻿using WebApi2StarterKit.IzendaBoundary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
+using WebApi2StarterKit.IzendaBoundary.Models;
+using WebApi2StarterKit.Models;
 
 namespace WebApi2StarterKit.IzendaBoundary
 {
     public static class IzendaUtilities
     {
+        public static Tenant GetTenantByName(string name)
+        {
+            using (var context = ApplicationDbContext.Create())
+            {
+                var tenant = context.Tenants.Where(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
+
+                return tenant;
+            }
+        }
+
+        public static async Task<Tenant> SaveTenantAsync(Tenant tenant)
+        {
+            using (var context = ApplicationDbContext.Create())
+            {
+                context.Tenants.Add(tenant);
+                await context.SaveChangesAsync();
+
+                return tenant;
+            }
+        }
+
         public static async Task CreateTenant(string tenantName, string authToken)
         {
             var existingTenant = await GetIzendaTenantByName(tenantName, authToken);
@@ -24,6 +45,28 @@ namespace WebApi2StarterKit.IzendaBoundary
             };
 
             await WebApiService.Instance.PostAsync("tenant", tenantDetail, authToken);
+        }
+
+        /// <summary>
+        /// Create a tenant
+        /// For more information, please refer to https://www.izenda.com/docs/ref/api_tenant.html#tenant-apis
+        /// </summary>
+        public static async Task<bool> CreateTenant(string tenantName, string tenantId, string authToken)
+        {
+            var existingTenant = await GetIzendaTenantByName(tenantId, authToken);
+            if (existingTenant != null)
+                return false;
+
+            var tenantDetail = new TenantDetail
+            {
+                Active = true,
+                Disable = false,
+                Name = tenantName,
+                TenantId = tenantId
+            };
+
+            // For more information, please refer to https://www.izenda.com/docs/ref/api_tenant.html#post-tenant
+            return await WebApiService.Instance.PostReturnBooleanAsync("tenant", tenantDetail, authToken);
         }
 
         public static async Task<RoleDetail> CreateRole(string roleName, TenantDetail izendaTenant, string authToken)

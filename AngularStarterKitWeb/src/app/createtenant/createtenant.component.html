@@ -1,20 +1,37 @@
 <app-navbar></app-navbar>
-<div class="col-md-8">
-    <h2>Create Tenant</h2>
-    <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !tenantid.valid }">
-            <label for="tenantid">Tenant ID</label>
-            <input type="text" class="form-control" name="tenantid" [(ngModel)]="model.tenantid" #tenantid="ngModel" required />
-            <div *ngIf="f.submitted && !tenantid.valid" class="help-block">Tenantname is required</div>
+<div class="container body-content">
+    <div class="row">
+        <h2>Create Tenant</h2>
+        <div class="col-md-8">
+            <h4>Create a new tenant</h4>
+            <hr />
+            <form name="form" (ngSubmit)="f.form.valid && createTenant()" #f="ngForm" novalidate>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !tenantid.valid }">
+                    <label for="tenantid">Tenant ID</label>
+                    <input type="text" class="form-control" name="tenantid" [(ngModel)]="model.tenantid" #tenantid="ngModel"
+                    required />
+                    <div *ngIf="f.submitted && !tenantid.valid" class="help-block">Tenant Id is required</div>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !tenantname.valid }">
+                    <label for="tenantname">Tenant name</label>
+                    <input type="text" class="form-control" name="tenantname" [(ngModel)]="model.tenantname"
+                        #tenantname="ngModel" required />
+                    <div *ngIf="f.submitted && !tenantname.valid" class="help-block">Tenantname is required</div>
+                </div>
+                <div class="form-group">
+                    <button [disabled]="loading" class="btn btn-primary">Submit <img *ngIf="loading"
+                            src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></button>
+                </div>
+                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+                <div *ngIf="success" class="alert alert-success alert-dismissable">{{success}}</div>
+            </form>
         </div>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !tenantname.valid }">
-            <label for="tenantname">Tenant name</label>
-            <input type="text" class="form-control" name="tenantname" [(ngModel)]="model.tenantname" #tenantname="ngModel" required />
-            <div *ngIf="f.submitted && !tenantname.valid" class="help-block">Tenantname is required</div>
+        <div class="col-md-4">
+            <div>
+                <h4>Further Instruction</h4>
+                <hr />
+                <p>If you want to add "Description" or enable a Module(s) to a newly created tenant, please go to Settings → Tenant Setup and update it.</p> 
+            </div>
         </div>
-        <div class="form-group">
-            <button [disabled]="loading" class="btn btn-primary">Submit <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></button>
-        </div>
-        <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-    </form>
+    </div>
 </div>

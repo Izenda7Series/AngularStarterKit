@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OAuth;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
@@ -6,17 +12,11 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OAuth;
+using WebApi2StarterKit.IzendaBoundary;
+using WebApi2StarterKit.Managers;
 using WebApi2StarterKit.Models;
 using WebApi2StarterKit.Providers;
 using WebApi2StarterKit.Results;
-using WebApi2StarterKit.Managers;
 
 namespace WebApi2StarterKit.Controllers
 {
@@ -24,20 +24,12 @@ namespace WebApi2StarterKit.Controllers
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
+        #region Variables
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        #endregion
 
-        public AccountController()
-        {
-        }
-
-        public AccountController(ApplicationUserManager userManager,
-            ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
-        {
-            UserManager = userManager;
-            AccessTokenFormat = accessTokenFormat;
-        }
-
+        #region Properties
         public ApplicationUserManager UserManager
         {
             get
@@ -48,10 +40,23 @@ namespace WebApi2StarterKit.Controllers
             {
                 _userManager = value;
             }
+        } 
+        #endregion
+
+        #region CTOR
+        public AccountController()
+        { } 
+
+        public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+        {
+            UserManager = userManager;
+            AccessTokenFormat = accessTokenFormat;
         }
+        #endregion
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
+        #region Methods
         [AllowAnonymous]
         [HttpGet]
         [Route("validateIzendaAuthToken")]
@@ -60,7 +65,7 @@ namespace WebApi2StarterKit.Controllers
             var userInfo = IzendaBoundary.IzendaTokenAuthorization.GetUserInfo(access_token);
             return userInfo;
         }
-        
+
         //This is used for exporting only
         [HttpGet]
         [AllowAnonymous]
@@ -147,7 +152,7 @@ namespace WebApi2StarterKit.Controllers
 
             IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
                 model.NewPassword);
-            
+
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
@@ -280,9 +285,9 @@ namespace WebApi2StarterKit.Controllers
             if (hasRegistered)
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                
-                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                    OAuthDefaults.AuthenticationType);
+
+                ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
+                   OAuthDefaults.AuthenticationType);
                 ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
@@ -346,7 +351,7 @@ namespace WebApi2StarterKit.Controllers
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
         {
             //validate tenant name + user name is unique
-            if(await UserManager.FindTenantUserAsync(model.Tenant, model.Email) != null)
+            if (await UserManager.FindTenantUserAsync(model.Tenant, model.Email) != null)
             {
                 ModelState.AddModelError("invalid_grant", string.Format("The email '{0}' is already existed in tenant '{1}'.", model.Email, model.Tenant));
             }
@@ -395,7 +400,7 @@ namespace WebApi2StarterKit.Controllers
 
                     string assignedRole = "Employee";
                     await IzendaBoundary.IzendaUtilities.CreateIzendaUser(user, assignedRole, izendaAdminAuthToken);
-                    
+
 
                     /// end izenda
                 }
@@ -436,9 +441,58 @@ namespace WebApi2StarterKit.Controllers
             result = await UserManager.AddLoginAsync(user.Id, info.Login);
             if (!result.Succeeded)
             {
-                return GetErrorResult(result); 
+                return GetErrorResult(result);
             }
             return Ok();
+        }
+
+        // POST: api/Account/CreateTenant
+        //[Authorize] 
+        [AllowAnonymous]
+        [Route("CreateTenant")]
+        public async Task<IHttpActionResult> CreateTenant(CreateTenantBindingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var izendaAdminAuthToken = IzendaTokenAuthorization.GetIzendaAdminToken();
+                var tenantName = model.TenantName;
+
+                // check user DB first
+                var isTenantExist = IzendaUtilities.GetTenantByName(tenantName); 
+
+                if (isTenantExist == null)
+                {
+                    // try to create a new tenant at izenda config DB
+                    var success = await IzendaUtilities.CreateTenant(tenantName, model.TenantId, izendaAdminAuthToken);
+
+                    if (success)
+                    {
+                        // save a new tenant at user DB
+                        var newTenant = new Tenant() 
+                        {
+                            Name = model.TenantId 
+                        };
+
+                        await IzendaUtilities.SaveTenantAsync(newTenant);
+
+                        return Ok("success");
+                        
+                    }
+                    else
+                    {
+                        // Izenda config DB has the same tenant name.
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    // user DB has the same tenant name.
+                    return BadRequest();
+                }
+            }
+
+            // If we got this far, something failed
+            return BadRequest(ModelState);
         }
 
         protected override void Dispose(bool disposing)
@@ -450,10 +504,10 @@ namespace WebApi2StarterKit.Controllers
             }
 
             base.Dispose(disposing);
-        }
+        } 
+        #endregion
 
         #region Helpers
-
         private IAuthenticationManager Authentication
         {
             get { return Request.GetOwinContext().Authentication; }

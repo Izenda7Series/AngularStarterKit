@@ -70,7 +70,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li *ngIf="(isAuthenticated | async)"><a> Hello {{currentUser | async}} </a></li>
-                <li class="dropdown" [routerLinkActive]="['active']" *ngIf="(isAuthenticated | async)">
+                <li class="dropdown" [routerLinkActive]="['active']" *ngIf="(canUpdateTenantAndUser | async)">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         Create User / Tenant
                         <span class="caret"></span>
