@@ -11,10 +11,12 @@ import { AuthenticationService } from '../_services/authentication.service';
 export class NavbarComponent {
   currentUser: Observable<string>;
   isAuthenticated: Observable<boolean>;
+  canUpdateTenantAndUser: Observable<boolean>;
 
   constructor(private router: Router, private authService: AuthenticationService) {
        this.currentUser = authService.currentUser();
        this.isAuthenticated = authService.isAuthenticated();
+       this.canUpdateTenantAndUser = authService.canUpdateTenantAndUser();
   }
 
   logout() {

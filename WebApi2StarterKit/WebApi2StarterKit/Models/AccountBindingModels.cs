@@ -84,4 +84,15 @@ namespace WebApi2StarterKit.Models
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
+
+    public class CreateTenantBindingModel
+    {
+        [Required]
+        [Display(Name = "Tenant ID")]
+        public string TenantId { get; set; }
+
+        [Required]
+        [Display(Name = "Tenant Name")]
+        public string TenantName { get; set; }
+    }
 }

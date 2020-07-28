@@ -10,6 +10,8 @@ export class ApiEndpointConfig {
                 return apiEndPoint + 'api/Account/Logout';
             case 'getizendatoken':
                 return apiEndPoint + 'api/User/GenerateToken';
+            case 'createtenant':
+                return apiEndPoint + 'api/Account/CreateTenant';
             default:
                 return '';
         }

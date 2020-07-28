@@ -13,6 +13,7 @@ export class AuthenticationService {
   public token: string;
   public currentUserSubject = new BehaviorSubject<string>(localStorage.getItem('currentUser'));
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
+  public isAdmin = new BehaviorSubject<boolean>(this.hasToken && localStorage.getItem('currentUser') === "IzendaAdmin@system.com");
 
   constructor(private httpClient: HttpClient, private router: Router) {
       // set token if saved in local storage
@@ -133,5 +134,9 @@ export class AuthenticationService {
 
   isAuthenticated(): Observable<boolean> {
       return this.isAuthenticatedSubject.asObservable();
+  }
+
+  canUpdateTenantAndUser(): Observable<boolean> {
+      return this.isAdmin.asObservable();
   }
 }
