@@ -32,6 +32,7 @@ import {
 } from './izendacomponents/index';
 import { IzendaIntegrate } from './_helpers/izendaintegrate';
 import { CreateTenantComponent } from './createtenant/createtenant.component';
+import { ReportviewersComponent } from './reportviewers/reportviewers.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { CreateTenantComponent } from './createtenant/createtenant.component';
     AdvancedReportPartComponent,
     ReportViewerComponent,
     DashboardViewerComponent,
-    CreateTenantComponent
+    CreateTenantComponent,
+    ReportviewersComponent
   ],
   imports: [
     BrowserModule,

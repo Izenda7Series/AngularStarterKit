@@ -14,7 +14,7 @@ export class IzendaIntegrate {
 
     DoIzendaConfig(): void {
         IzendaSynergy.config({
-            WebApiUrl: 'http://localhost:3909/api/',
+            WebApiUrl: 'http://localhost:31009/api/',
             BaseUrl: '/',
             RootPath: '/assets/izenda',
             CssFile: 'izenda-ui.css',
@@ -188,6 +188,12 @@ export class IzendaIntegrate {
             // pass in the target node, as well as the observer options
             observer.observe(target, config);
         }
+    }
+
+    RenderReportViewers(reportId: string, id: string): any {
+        this.setContext();
+        const dom = document.getElementById(id);
+        return IzendaSynergy.renderReportViewerPage(dom, reportId);
     }
 }
 
