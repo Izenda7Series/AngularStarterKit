@@ -392,13 +392,13 @@ namespace WebApi2StarterKit.Controllers
                     ////izenda
                     var izendaAdminAuthToken = IzendaBoundary.IzendaTokenAuthorization.GetIzendaAdminToken();
 
-                    if (tenant != null)
+                    if (tenant != null) //TODO: replace this method with the newer one (different parameters)
                         await IzendaBoundary.IzendaUtilities.CreateTenant(tenant.Name, izendaAdminAuthToken);
 
                     //deprecated in favor of CreateIzendaUser
                     //await IzendaBoundary.IzendaUtilities.CreateUser(user, "Employee", izendaAdminAuthToken);
 
-                    string assignedRole = "Employee";
+                    string assignedRole = "Employee"; //TODO: replace this method with the newer one (different parameters)
                     await IzendaBoundary.IzendaUtilities.CreateIzendaUser(user, assignedRole, izendaAdminAuthToken);
 
 
@@ -494,7 +494,43 @@ namespace WebApi2StarterKit.Controllers
             // If we got this far, something failed
             return BadRequest(ModelState);
         }
+        // GET: api/Account/GetTenants
+        //[Authorize] 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetTenants")]
+        public IList<IzendaBoundary.Models.TenantDetail> GetTenants()
+        {
+            var izendaAdminAuthToken = IzendaTokenAuthorization.GetIzendaAdminToken();
+            return IzendaUtilities.GetIzendaTenants(izendaAdminAuthToken).Result;
+        }
 
+        // POST api/Account/CreateUser
+        [AllowAnonymous]
+        [Route("CreateUser")]
+        public async Task<IHttpActionResult> CreateUser(CreateUserBindingModel model)
+        {
+            //validate tenant name + user name is unique
+            try
+            {
+                string __buf = await UserManager.CreateUserAsync(model);
+                if (!string.IsNullOrEmpty(__buf)) { 
+                    ModelState.AddModelError("invalid_grant", __buf);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Ok("success");
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing && _userManager != null)

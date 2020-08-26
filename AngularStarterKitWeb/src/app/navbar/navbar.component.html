@@ -7,6 +7,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="https://www.izenda.com/" target="_blank" rel="noopener noreferrer">
+                <img src="https://3u8npt2xyr3u2fgvai49zopv-wpengine.netdna-ssl.com/wp-content/uploads/2019/05/izenda-logo-white.png" 
+                     alt="Site Logo" style="height:18px; width: 100px" />
+            </a>
             <a class="navbar-brand" [routerLink]="['/']">Angular StarterKit</a>
         </div>
         <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1">
@@ -36,15 +40,15 @@
                         <li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                             <a [routerLink]="['/izenda/reportviewer']">Report Viewer</a>
                         </li>
-                        <li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                        <!-- TODO: REMOVE!  li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                             <a [routerLink]="['/izenda/reportcustomfilter']">Customized Report Filters Viewer</a>
-                        </li>
+                        </li   -->
                         <li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                             <a [routerLink]="['/izenda/reportpart']">Report Parts</a>
                         </li>
-                        <li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                        <!-- TODO: REMOVE!  li class="dropdown-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                             <a [routerLink]="['/izenda/advancedreportpart']">Advanced Report Parts</a>
-                        </li>
+                        </li  -->
                     </ul>
                 </li>
 
@@ -76,11 +80,13 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <!-- TODO: create user -->
-                        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                            <a [routerLink]="['/createtenant']">Create Tenant</a>
-                        </li>
-                        
+                      <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                        <a [routerLink]="['/createtenant']">Create Tenant</a>  <!--  [queryParams]="{item: 'tenant'}"  -->
+                      </li>
+                      <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                        <a [routerLink]="['/createuser']">Create User</a> <!-- [queryParams]="{item: 'user'}" -->
+                      </li>
+
                     </ul>
                 </li>
                 <li *ngIf="(isAuthenticated | async)"><a href="javascript:void(0)" (click)="logout()">Log off</a></li>

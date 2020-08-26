@@ -33,19 +33,45 @@ namespace WebApi2StarterKit.Providers
 
             var data = await context.Request.ReadFormAsync();
             string tenant = data["tenant"];
-            ApplicationUser user;
+            ApplicationUser user = null;
+            bool __useAD = false;
+            adUser __adUser = new adUser();
+
+            //            var passwordStore = Store as IUserPasswordStore<ApplicationUser>;
+            /*  Additional information about the Identity system with OWIN
+            introduction: https://docs.microsoft.com/en-us/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity
+            granting flows: https://stackoverflow.com/questions/34562211/what-is-authorizeendpointpath
+            base implementation: https://www.teamscs.com/2016/07/token-based-active-directory-authentication-using-owin/
+             */
+
             try
             {
-                user = await userManager.FindTenantUserAsync(tenant, context.UserName);
+                // in this example application, we do not use the full ActiveDirectory identity features.
+                // That, plus synchroning the users in the configuration DB and in the WebApi
+                // authorization DB, allows just to validate the user against the Active Directory.
+                // In case you dont want to synchronize the users and/or not using the authorization DB
+                // while still want to use the Active Directory - you need to implement
+                // the full - featured identity mechanizm with ActiveDirectory support.
+
+                bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["useADlogin"], out __useAD);
+                if (__useAD) __adUser = userManager.ValidateADUserAsync(context.UserName, context.Password);
+                if (!__useAD || __adUser.isValid) user = await userManager.FindTenantUserAsync(tenant, context.UserName);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
 
-            if (user == null)
+            if (user == null || (__useAD && !__adUser.isValid))
             {
-                context.SetError("invalid_grant", "The user name or tenant name is incorrect.");
+                string __msg = "The user name or tenant name is incorrect.";
+                if (__adUser.isValid)
+                {
+                    __adUser.password = context.Password;
+                    await userManager.CreateADUser(__adUser, tenant);
+                    __msg = "The user is valid but was not activated.";
+                }
+                context.SetError("invalid_grant", __msg);
                 return;
             }
 
@@ -56,7 +82,6 @@ namespace WebApi2StarterKit.Providers
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 return;
             }
-
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
             ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
@@ -66,9 +91,9 @@ namespace WebApi2StarterKit.Providers
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
-        }
+    }
 
-        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+    public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
             {
