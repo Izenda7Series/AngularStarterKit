@@ -14,7 +14,9 @@ export class ApiEndpointConfig {
             case 'getizendatoken':
                 return apiEndPoint + 'api/User/GenerateToken';
             case 'izendaAPI':
-                return izendaApiEndPoint + 'api/';
+                return izendaApiEndPoint + 'api';
+            case 'authAPI':
+                return apiEndPoint + 'api';
             default:
                 return '';
         }

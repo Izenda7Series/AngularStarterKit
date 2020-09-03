@@ -50,7 +50,7 @@ export class CreateUserComponent implements OnInit {
         UserID: this.model.userid, IsAdmin: this.model.isadmin,
         FirstName: this.model.firstname, LastName: this.model.lastname,
         SelectedRole: this.model.selectedrole == null ? '' : this.model.selectedrole.name });
-      this.authService.AppSvcPost('createuser', data).subscribe(result => {
+      this.authService.AppSvcPost('account/createuser', data).subscribe(result => {
           if (result === 'success') {
             this.success = 'User has been created successfully';
             this.error = '';

@@ -151,16 +151,21 @@ export class AuthenticationService {
       return this.isAdminSubject.asObservable();
   }
 
-  AppSvcPost(pathtoken: string, jsonData: any) {
-    if (pathtoken === null || pathtoken.trim().length === 0)
+  AppSvcPost(route: string, jsonData: any) {
+    if (route === null || route.trim().length === 0)
       return;
 
-    const url: string = ApiEndpointConfig.getPath(pathtoken);
     const httpHeaders: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
     const httpOptions = {
       headers: httpHeaders
     };
+    let url: string = route;
+    if (!url.toLowerCase().startsWith('http:'))
+      url = this.endPoint + (url.startsWith("/") ? "" : "/") + url;
     return this.httpClient.post(url, jsonData, httpOptions)
       .pipe(map(res => (res)));
+  }
+  private get endPoint() {
+    return ApiEndpointConfig.getPath('authAPI');
   }
 }

@@ -24,8 +24,8 @@ export class IzendaApiService {
         catchError(this.handleError<any[]>('getObjects', []))
       );
   }
-  APIGet(url: string, selectedTenant?: string, currentTenant?: string, sModule?: string) {
-    if (url === null || url.trim().length === 0)
+  APIGet(route: string, selectedTenant?: string, currentTenant?: string, sModule?: string) {
+    if (route === null || route.trim().length === 0)
       return;
     let token = localStorage.getItem('izendatoken');
     let request_headers = new HttpHeaders({ 'Content-Type': 'application/json', 'access_token': token });
@@ -34,7 +34,7 @@ export class IzendaApiService {
     let request_options = { headers: request_headers, withCredentials: false };
 
     if (sModule == null) sModule = "";
-
+    let url: string = route;
     if (!url.toLowerCase().startsWith('http:'))
       url = this.endPoint + (url.startsWith("/") ? "" : "/") + url;
     return this.http.get(url, request_options)
@@ -48,10 +48,10 @@ export class IzendaApiService {
     let request_options = { headers: request_headers, withCredentials: false };
 
     if (sModule == null) sModule = "";
-
-    if (!route.toLowerCase().startsWith('http:'))
-      route = this.endPoint + (route.startsWith("/") ? "" : "/") + route;
-    return this.http.post(route, parData == null? "":parData, request_options)
+    let url: string = route;
+    if (!url.toLowerCase().startsWith('http:'))
+      url = this.endPoint + (url.startsWith("/") ? "" : "/") + url;
+    return this.http.post(url, parData == null? "":parData, request_options)
       .pipe(map(res =>(res)));
   }
 

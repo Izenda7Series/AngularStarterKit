@@ -35,7 +35,7 @@ export class CreateTenantComponent implements OnInit {
       this.loading = true;
 
       const body: string = JSON.stringify({ TenantId: this.model.tenantid, TenantName: this.model.tenantname });
-      this.authService.AppSvcPost('createtenant', body).subscribe(result => {
+      this.authService.AppSvcPost('account/createtenant', body).subscribe(result => {
         if (result === 'success'){
           this.success = 'Tenant has been created successfully';
           this.error = '';
