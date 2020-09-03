@@ -372,3 +372,4 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/AngularStarterKitWeb/src/app/_services/waapp.service.ts

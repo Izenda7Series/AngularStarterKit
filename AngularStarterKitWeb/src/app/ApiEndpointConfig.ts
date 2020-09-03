@@ -7,16 +7,14 @@ export class ApiEndpointConfig {
         switch (value) {
             case 'register':
                 return apiEndPoint + 'api/Account/Register';
-          case 'login':
-            return apiEndPoint + 'Token';//'api/Account/ExternalLogin';//'Token';
+            case 'login':
+                return apiEndPoint + 'Token';
             case 'logout':
                 return apiEndPoint + 'api/Account/Logout';
             case 'getizendatoken':
                 return apiEndPoint + 'api/User/GenerateToken';
             case 'izendaAPI':
                 return izendaApiEndPoint + 'api/';
-          case 'createuser':
-                return apiEndPoint + 'api/Account/CreateUser';
             default:
                 return '';
         }
