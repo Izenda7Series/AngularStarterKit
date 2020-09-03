@@ -8,15 +8,18 @@ import { AuthenticationService } from '../_services/authentication.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   currentUser: Observable<string>;
   isAuthenticated: Observable<boolean>;
-  canUpdateTenantAndUser: Observable<boolean>;
+  public canUpdateTenantAndUser: boolean;
 
   constructor(private router: Router, private authService: AuthenticationService) {
-       this.currentUser = authService.currentUser();
-       this.isAuthenticated = authService.isAuthenticated();
-       this.canUpdateTenantAndUser = authService.canUpdateTenantAndUser();
+    this.currentUser = this.authService.currentUser();
+    this.isAuthenticated = this.authService.isAuthenticated();
+  }
+
+  ngOnInit() {
+    this.authService.canUpdateTenantAndUser().subscribe((r) => { this.canUpdateTenantAndUser = r; });
   }
 
   logout() {

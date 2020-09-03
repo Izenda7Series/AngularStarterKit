@@ -1,13 +1,13 @@
-# Izenda Angular2Starterkit
+# Izenda AngularStarterkit
 
 ## Overview
-The Angular2Starterkit illustrates the concepts of integrating Izenda into Angular2 applications.
+The AngularStarterkit illustrates the concepts of integrating Izenda into Angular2 applications.
 
 ### Q. What is in this repository?
 
 ### A. This is a simple example using a project template with Izenda Embedded into it. This repository is only an example of integrating Izenda into another application. The project template used in this scenario is used as a substitute for your application. This repository shows examples of how you might embed Izenda into your application.
 
- :warning: **The Angular2Starterkit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
+ :warning: **The AngularStarterkit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
 
 
  :warning: **The Izenda configuration database script provided is currently configured for version 3.7.0 of Izenda.**
@@ -18,7 +18,7 @@ The Angular2Starterkit illustrates the concepts of integrating Izenda into Angul
 
 
 - Create a database named 'IzendaAngular2' (This is the database for the Izenda configuration. It contains report definitions, dashboards,etc.). You may use any name of your choosing, just be sure to modify the script below to use the new database name. 
-- Download and execute the <a href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/DbScripts/Izenda.sql">Izenda.sql</a> script. Please note, the database version can be found in the IzendaDBVersion table of this database. This will be necessary when obtaining the proper resources in the following steps.  
+- Download and execute the <a href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/DbScripts/Izenda.sql">Izenda.sql</a> script. Please note, the database version can be found in the IzendaDBVersion table of this database. This will be necessary when obtaining the proper resources in the following steps.  
 
 - Download and deploy the Izenda API to IIS. The API can be found on our <a href="https://downloads.izenda.com/">Downloads Page</a> in our version directories. Select the version directory that corresponds Izenda configuration database version and click the "API" resource in the directory. 
 
@@ -28,37 +28,37 @@ The Angular2Starterkit illustrates the concepts of integrating Izenda into Angul
 
 ### Deploying the WebAPI & Database
 - Create a database named 'IzendaAngular2_WebApi'. This is the database for the WebApi application. It contains the users, roles, tenants used to login. You may use any name of your choosing, just be sure to modify the script below to use the new database name.
-- Download the <a href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/DbScripts/Starterkit_Api.sql">Starterkit_Api.sql</a> script.
-- Modify the <a  href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/WebApi2StarterKit/WebApi2StarterKit/Web.config">web.config (Line 75)</a> file with a valid connection string to this new database.
+- Download the <a href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/DbScripts/Starterkit_Api.sql">Starterkit_Api.sql</a> script.
+- Modify the <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/WebApi2StarterKit/WebApi2StarterKit/Web.config">web.config (Line 75)</a> file with a valid connection string to this new database.
 
 ```xml
   <connectionStrings>
     <add name="DefaultConnection" connectionString="[your connection string here]" providerName="System.Data.SqlClient" />
   </connectionStrings>
 ``` 
-- Modify the 'IzendaApiUrl' value in the <a  href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/WebApi2StarterKit/WebApi2StarterKit/Web.config">web.config (Line 80)</a> file with the url of the Izenda API.
+- Modify the 'IzendaApiUrl' value in the <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/WebApi2StarterKit/WebApi2StarterKit/Web.config">web.config (Line 80)</a> file with the url of the Izenda API.
 ```xml
 <add key="IzendaApiUrl" value="http://localhost:9999/api/" />
 ```
 
 ### Deploying the Retail Database (optional)
-Create the Retail database with the <a  href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/DbScripts/RetailDbScript.sql">RetailDbScript.sql</a> file.
+Create the Retail database with the <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/DbScripts/RetailDbScript.sql">RetailDbScript.sql</a> file.
 
-### Configuring Angular2StarterKitWeb
-- Change the 'WebApiUrl' value in the  <a  href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/Angular2StarterKitWeb/app/_helpers/izendaintegrate.ts">izendaintegrate.js (Line 16)</a> file with the URL for the Izenda API.
+### Configuring AngularStarterkitWeb
+- Change the 'WebApiUrl' value in the  <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/AngularStarterkitWeb/src/app/_helpers/izendaintegrate.ts">izendaintegrate.js (Line 17)</a> file with the URL for the Izenda API.
 
 ```javascript
 "WebApiUrl": "http://localhost:9999/api/",
 ``` 
-- Open the <a href="https://github.com/Izenda7Series/Angular2Starterkit/blob/master/Angular2StarterKitWeb/app/config.ts">config.ts (Line 4)</a> file and ensure 'apiEndPoint' is set. This will default to http://localhost:3358/ and can be left as is. 
+- Open the <a href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/AngularStarterKitWeb/src/app/ApiEndpointConfig.ts">ApiEndpointConfig.ts (Line 4)</a> file and ensure the values 'apiEndPoint' and 'izendaApiEndPoint' are set. The 'apiEndPoint' will default to http://localhost:3358/ and can be left as is. The 'izendaApiEndPoint' will default to http://localhost:9999/ and should be updated with the url of the Izenda API (if it is different from the default value). 
 
 ```javascript
 let apiEndPoint = "http://localhost:3358/";
 ``` 
 - Download a copy of the EmbeddedUI. The EmbeddedUI can be found on our <a href="https://downloads.izenda.com/">Downloads Page</a> in our version directories. Select the version directory that corresponds Izenda configuration database version and click the "EmbeddedUI" resource in the directory. 
-- Extract the files of the EmbeddedUI and place them in the <a href="https://github.com/Izenda7Series/Angular2Starterkit/tree/master/Angular2StarterKitWeb/assets/izenda">Angular2StarterKitWeb/assets/izenda</a> folder of your Angular 2 Kit.
+- Extract the files of the EmbeddedUI and place them in the <a href="https://github.com/Izenda7Series/AngularStarterkit/tree/master/AngularStarterkitWeb/src/assets/izenda">AngularStarterkitWeb/src/assets/izenda</a> folder of your Angular 2 Kit.
 
-- Open a command-line window at root folder Angular2StarterKitWeb and run the following commands:
+- Open a command-line window at root folder AngularStarterkitWeb and run the following commands:
 ```bash
 npm install or yarn install
 ``` 

@@ -1,0 +1,60 @@
+<div class="container body-content">
+    <div class="row">
+        <h2>Create User</h2>
+        <div class="col-md-8">
+            <h4>Create a new user</h4>
+            <hr />
+            <form name="form" (ngSubmit)="f.form.valid && createUser()" #f="ngForm" novalidate>
+                <div class="form-group">
+                    <label for="tenant">Tenant</label>
+                    <select class="form-control" name="tenant" [(ngModel)]="model.tenant" (change)="tenantChanged($event.target.value)">
+                      <option [ngValue]=null>Select tenant</option>
+                      <!-- option value=null disabled>Select tenant</option -->
+                      <option *ngFor="let t of tenants" [ngValue]="t">{{t.name}}</option>
+                    </select>
+                </div>
+                <div *ngIf="model.tenant == null" class="form-group" [ngClass]="{ 'has-error': f.submitted && !isadmin.valid }">
+                  <label>Is Admin
+                    <input type="checkbox" class="form-control" name="isadmin" [(ngModel)]="model.isadmin" #isadmin="ngModel" />
+                  </label>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !selectedrole.valid }">
+                  <label for="selectedrole">Selected Role</label>
+                  <select class="form-control" name="selectedrole" [(ngModel)]="model.selectedrole"  #selectedrole="ngModel">
+                    <option [ngValue]=null>Select role</option>
+                    <option *ngFor="let r of roles" [ngValue]="r">{{r.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && userid.errors }">
+                  <label for="userid">User ID</label>
+                  <input type="email" placeholder="user@company.com (required)" class="form-control" email="true" name="userid" [(ngModel)]="model.userid" #userid="ngModel" required /> <!-- [pattern]="emailPattern" / -->
+                  <div *ngIf="f.submitted && (userid.errors || !userid.valid)" class="help-block">Please provide a User Id.</div>
+                  <div *ngIf="userid.errors?.email" class="help-block">Expected: user@company.* </div>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstname.valid }">
+                    <label for="firstname">First name</label>
+                    <input type="text" placeholder="First Name (required)" class="form-control" name="firstname" [(ngModel)]="model.firstname" #firstname="ngModel" required />
+                    <div *ngIf="f.submitted && !firstname.valid" class="help-block">First name is required</div>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !lastname.valid }">
+                    <label for="lastname">Last name</label>
+                    <input type="text" placeholder="Last Name (required)" class="form-control" name="lastname" [(ngModel)]="model.lastname" #lastname="ngModel" required />
+                    <div *ngIf="f.submitted && !lastname.valid" class="help-block">Last name is required</div>
+                </div>
+                <div class="form-group">
+                    <button [disabled]="isloading" class="btn btn-primary">Submit <img *ngIf="isloading"
+                            src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></button>
+                </div>
+                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+                <div *ngIf="success" class="alert alert-success alert-dismissable">{{success}}</div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div>
+                <h4>Further Instruction</h4>
+                <hr />
+                <p>If you want to add "Description" or enable a Module(s) to a newly created user, please go to Settings → User Setup and update it.</p> 
+            </div>
+        </div>
+    </div>
+</div>

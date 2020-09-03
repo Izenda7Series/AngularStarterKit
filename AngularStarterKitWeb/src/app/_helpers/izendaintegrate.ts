@@ -14,7 +14,7 @@ export class IzendaIntegrate {
 
     DoIzendaConfig(): void {
         IzendaSynergy.config({
-            WebApiUrl: 'http://localhost:31009/api/',
+            WebApiUrl: 'http://localhost:9999/api/',
             BaseUrl: '/',
             RootPath: '/assets/izenda',
             CssFile: 'izenda-ui.css',
