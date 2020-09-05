@@ -392,13 +392,10 @@ namespace WebApi2StarterKit.Controllers
                     ////izenda
                     var izendaAdminAuthToken = IzendaBoundary.IzendaTokenAuthorization.GetIzendaAdminToken();
 
-                    if (tenant != null) //TODO: replace this method with the newer one (different parameters)
+                    if (tenant != null)
                         await IzendaBoundary.IzendaUtilities.CreateTenant(tenant.Name, izendaAdminAuthToken);
 
-                    //deprecated in favor of CreateIzendaUser
-                    //await IzendaBoundary.IzendaUtilities.CreateUser(user, "Employee", izendaAdminAuthToken);
-
-                    string assignedRole = "Employee"; //TODO: replace this method with the newer one (different parameters)
+                    string assignedRole = "Employee";
                     await IzendaBoundary.IzendaUtilities.CreateIzendaUser(user, assignedRole, izendaAdminAuthToken);
 
 

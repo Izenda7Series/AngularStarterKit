@@ -64,49 +64,60 @@ namespace WebApi2StarterKit
             }
             return manager;
         }
-
-        public adUser ValidateADUserAsync(string username, string password)
+        /* The following method validates the existence of the A.D. user and returns the information stored in the AD principal */
+        public ADUser ValidateADUserAsync(string userID, string password)
         {
-            adUser __ret = new adUser();
-            __ret.isValid = false;
-            /* Using the domain that the authentication server belongs to. */
-            string domainName = Environment.UserDomainName;
+            ADUser ret = new ADUser();
+            ret.isValid = false;
+            /* trying to use the pre-set domain values */
+            string adDomain = System.Configuration.ConfigurationManager.AppSettings["ADDomain"];
+            string adContainer = System.Configuration.ConfigurationManager.AppSettings["ADContainer"];
+            string adLoginName = System.Configuration.ConfigurationManager.AppSettings["ADLoginUser"];
+            string adLoginPwd = System.Configuration.ConfigurationManager.AppSettings["ADLoginPwd"];
 
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(domainName))
+            /* if they don't exist - let's try to use the domain that the authentication server belongs to. */
+            if (string.IsNullOrEmpty(adDomain)) adDomain = Environment.UserDomainName;
+            if (string.IsNullOrEmpty(adLoginName)) adDomain = Environment.UserName;
+
+            if (string.IsNullOrEmpty(userID) || string.IsNullOrEmpty(adDomain))
+                return ret;
+
+            PrincipalContext ctx = null;
+            try
             {
-                using (PrincipalContext __ctx = new PrincipalContext(ContextType.Domain, domainName))
-                {
-                    try
-                    {
-                        string __adName = GetADUserByEmail(username, __ctx);
-                        UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(__ctx, IdentityType.SamAccountName, __adName);
-                        
-                        if (userPrincipal != null)
-                        {
-                            __ret.lastName = __adName;
-                            __ret.firstName = __adName;
-                            __ret.email = username;
+                /* Implementations of AD/LDAP work differently, for some of them we can use 
+                 * the environment and for some - we must use the pre - defined values */
+                if (string.IsNullOrEmpty(adContainer) && string.IsNullOrEmpty(adLoginName) && string.IsNullOrEmpty(adLoginPwd))
+                    ctx = new PrincipalContext(ContextType.Domain, adDomain);
+                else
+                    ctx = new PrincipalContext(ContextType.Domain, adDomain, adContainer, adLoginName, adLoginPwd);
+                ret = GetADUserByEmail(userID, ctx);
+                UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(ctx, IdentityType.SamAccountName, ret.sam);
 
-                            // Validate credential with Active Directory information. This is optional for authentication process.
-                            // If you want check password one more time, you can check here. Otherwise, you need to remove password from parameter and skip this and set isAuthencate as true since userPrincipal is not null.
-                            __ret.isValid = __ctx.ValidateCredentials(__adName, password, ContextOptions.Negotiate);
-                            if (__ret.isValid) __ret.isValid = !userPrincipal.IsAccountLockedOut();
-                            if (__ret.isValid && userPrincipal.Enabled.HasValue && !userPrincipal.Enabled.Value) __ret.isValid = false;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(e);
-                        __ret.isValid = false;
-                    }
+                if (userPrincipal != null)
+                {
+                    // Validate credential with Active Directory information. This is optional for authentication process.
+                    // If you want check password one more time, you can check here. Otherwise, you need to remove password from parameter and skip this and set isAuthencate as true since userPrincipal is not null.
+                    ret.isValid = ctx.ValidateCredentials(ret.sam, password, ContextOptions.Negotiate);
+                    if (ret.isValid) ret.isValid = !userPrincipal.IsAccountLockedOut();
+                    if (ret.isValid && userPrincipal.Enabled.HasValue && !userPrincipal.Enabled.Value) ret.isValid = false;
                 }
             }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e);
+                ret.isValid = false;
+            }
+            finally
+            {
+                ctx.Dispose();
+            }
 
-            return __ret;
+            return ret;
         }
-        public async Task<bool>  CreateADUser(adUser usr, string tenant)
+        public async Task<bool>  CreateADUser(ADUser usr, string tenant)
         {
-            bool __ret = false;
+            bool ret = false;
             CreateUserBindingModel model = new CreateUserBindingModel();
             model.FirstName = usr.firstName;
             model.LastName = usr.lastName;
@@ -114,10 +125,10 @@ namespace WebApi2StarterKit
             model.Tenant = tenant;
             model.IsAdmin = false;
             await CreateUserAsync(model,usr.password);
-            return __ret;
+            return ret;
         }
         public async Task<string> CreateUserAsync(CreateUserBindingModel model, string pass = "") { 
-            string __ret = "";
+            string ret = "";
 
             //validate tenant name + user name is unique
             if (await FindTenantUserAsync(model.Tenant, model.UserID) != null)
@@ -141,8 +152,8 @@ namespace WebApi2StarterKit
             var user = new ApplicationUser() { UserName = model.UserID, Email = model.UserID, TenantId = tenant?.Id };
 
             //TODO: do something smarter about the password.
-            string __defaultPWD = string.IsNullOrEmpty(pass)?"Izenda@123":pass;
-            IdentityResult result = await CreateAsync(user, __defaultPWD);
+            string defaultPWD = string.IsNullOrEmpty(pass)?"Izenda@123":pass;
+            IdentityResult result = await CreateAsync(user, defaultPWD);
 
             if (!result.Succeeded)
             {
@@ -157,7 +168,7 @@ namespace WebApi2StarterKit
                     ////izenda
                     var izendaAdminAuthToken = IzendaBoundary.IzendaTokenAuthorization.GetIzendaAdminToken();
 
-                    if (tenant != null) //TODO: replace this method with the newer one (different parameters)
+                    if (tenant != null)
                         await IzendaBoundary.IzendaUtilities.CreateTenant(tenant.Name, izendaAdminAuthToken);
 
                     string assignedRole = String.IsNullOrEmpty(model.SelectedRole) ? "Employee" : model.SelectedRole;
@@ -177,23 +188,51 @@ namespace WebApi2StarterKit
                     throw ex;
                 }
             }
-            return __ret;
+            return ret;
         }
-        public string GetADUserByEmail(string email, PrincipalContext ctx) {
-            UserPrincipal qbeUser = new UserPrincipal(ctx);
-            qbeUser.EmailAddress = email;
-
-            PrincipalSearcher srch = new PrincipalSearcher(qbeUser);
-            Principal __pr = srch.FindOne();
-            return __pr.Name;
+        public ADUser GetADUserByEmail(string email, PrincipalContext ctx) {
+            ADUser ret = new ADUser();
+            ret.isValid = false;
+            UserPrincipal uP = new UserPrincipal(ctx);
+            Principal pr = null;
+            using (PrincipalSearcher searcher = new PrincipalSearcher(uP))
+            {
+                PrincipalSearchResult<Principal> results = searcher.FindAll();
+                pr = results.FirstOrDefault(r => r.SamAccountName.Equals(email.Split('@')[0], StringComparison.InvariantCultureIgnoreCase));
+                // it does not always find the user by sAM account. In this case, let's try to find by the email. 
+                if (pr == null)
+                {
+                    foreach (Principal result in results)
+                    {
+                        try
+                        {
+                            if (email.Equals((result as UserPrincipal).EmailAddress, StringComparison.InvariantCultureIgnoreCase)) {
+                                pr = result;
+                            }
+                        }
+                        catch { }
+                    }
+                }
+                if (pr != null)
+                {
+                    UserPrincipal buff = pr as UserPrincipal;
+                    ret.email = buff.EmailAddress;
+                    ret.firstName = buff.Name.Split(' ')[0];
+                    ret.lastName = buff.Name.Split(' ')[1];
+                    ret.sam = buff.SamAccountName;
+                }
+            }
+            return ret;
         }
-    }
-    public struct adUser
-    {
-        public bool isValid;
-        public string firstName;
-        public string lastName;
-        public string email;
-        public string password;
+        // This structure holds the values passed by the AD user related methods.
+        public struct ADUser
+        {
+            public bool isValid;
+            public string firstName;
+            public string lastName;
+            public string sam;
+            public string email;
+            public string password;
+        }
     }
 }

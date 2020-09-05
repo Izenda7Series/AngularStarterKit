@@ -29,15 +29,14 @@ namespace WebApi2StarterKit.Providers
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+            ApplicationUserManager userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             var data = await context.Request.ReadFormAsync();
             string tenant = data["tenant"];
             ApplicationUser user = null;
-            bool __useAD = false;
-            adUser __adUser = new adUser();
+            bool useAD = false;
+            ApplicationUserManager.ADUser adUser = new ApplicationUserManager.ADUser();
 
-            //            var passwordStore = Store as IUserPasswordStore<ApplicationUser>;
             /*  Additional information about the Identity system with OWIN
             introduction: https://docs.microsoft.com/en-us/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity
             granting flows: https://stackoverflow.com/questions/34562211/what-is-authorizeendpointpath
@@ -53,22 +52,22 @@ namespace WebApi2StarterKit.Providers
                 // while still want to use the Active Directory - you need to implement
                 // the full - featured identity mechanizm with ActiveDirectory support.
 
-                bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["useADlogin"], out __useAD);
-                if (__useAD) __adUser = userManager.ValidateADUserAsync(context.UserName, context.Password);
-                if (!__useAD || __adUser.isValid) user = await userManager.FindTenantUserAsync(tenant, context.UserName);
+                bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["useADlogin"], out useAD);
+                if (useAD) adUser = userManager.ValidateADUserAsync(context.UserName, context.Password);
+                if (!useAD || adUser.isValid) user = await userManager.FindTenantUserAsync(tenant, context.UserName);
             }
             catch (Exception ex)
             {
                 throw;
             }
 
-            if (user == null || (__useAD && !__adUser.isValid))
+            if (user == null || (useAD && !adUser.isValid))
             {
                 string __msg = "The user name or tenant name is incorrect.";
-                if (__adUser.isValid)
+                if (adUser.isValid)
                 {
-                    __adUser.password = context.Password;
-                    await userManager.CreateADUser(__adUser, tenant);
+                    adUser.password = context.Password;
+                    await userManager.CreateADUser(adUser, tenant);
                     __msg = "The user is valid but was not activated.";
                 }
                 context.SetError("invalid_grant", __msg);

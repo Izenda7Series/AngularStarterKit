@@ -103,7 +103,7 @@ namespace WebApi2StarterKit.IzendaBoundary
         /// At this point, it is safer to leave the old method rather then to remove it.
         /// TODO: remove this method completely.
         /// </summary>
-        [Obsolete("This method is obsolete. Call 'CreateIzendaUser(string tenant, string userID, string lastName...' instead.", false)]
+        [Obsolete("This method is obsolete. Call 'CreateIzendaUser(string tenant, string userID, string lastName...' instead. We shall address this on creating the common DLL for all the starter kits.", false)]
         public static async Task CreateTenant(string tenantName, string authToken)
         {
             var existingTenant = await GetIzendaTenantByName(tenantName, authToken);
@@ -159,7 +159,7 @@ namespace WebApi2StarterKit.IzendaBoundary
                 LastName = lastName,
                 FirstName = firstName,
                 TenantDisplayId = izendaTenant != null ? izendaTenant.Name : string.Empty,
-                InitPassword = false,
+                InitPassword = false
                 //SystemAdmin = isAdmin
             };
 
@@ -183,7 +183,7 @@ namespace WebApi2StarterKit.IzendaBoundary
         /// <param name="authToken">the authentication token</param>
         /// <returns>true if the operation was successful, false otherwise</returns>
 
-        [ObsoleteAttribute("This method is obsolete. Call 'CreateIzendaUser(string tenant, string userID, string lastName...' instead.", false)]
+        [ObsoleteAttribute("This method is obsolete. Call 'CreateIzendaUser(string tenant, string userID, string lastName...' instead.  We shall address this on creating the common DLL for all the starter kits.", false)]
         public static async Task<bool> CreateIzendaUser(WebApi2StarterKit.Models.ApplicationUser appUser, string roleName, string authToken)
         {
             var izendaTenant = appUser.Tenant != null ? await GetIzendaTenantByName(appUser.Tenant.Name, authToken) : null;
