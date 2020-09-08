@@ -76,21 +76,24 @@ export class AuthenticationService {
           headers: httpHeaders
       };
 
+      this.common_logout();
       return this.httpClient.post(url, body, httpOptions )
           .subscribe(response => {
-                  localStorage.removeItem('currentUser');
-                  localStorage.removeItem('tokenKey');
-                  localStorage.removeItem('izendatoken');
-
-                  // Notify is not authenticated
-                  this.isAdminSubject.next(false);
-                  this.isAuthenticatedSubject.next(false);
-                  this.currentUserSubject.next(null);
+              // Add token-dependant logout functionality here (optional).
               },
           err => {
               console.log(err);
               });
 
+  }
+  common_logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('tokenKey');
+    localStorage.removeItem('izendatoken');
+    // Notify is not authenticated
+    this.isAdminSubject.next(false);
+    this.isAuthenticatedSubject.next(false);
+    this.currentUserSubject.next(null);
   }
 
   register(tenantname: string, username: string, password: string, confirmpassword: string) {

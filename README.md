@@ -45,7 +45,7 @@ The AngularStarterkit illustrates the concepts of integrating Izenda into Angula
 Create the Retail database with the <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/DbScripts/RetailDbScript.sql">RetailDbScript.sql</a> file.
 
 ### Configuring AngularStarterkitWeb
-- Change the 'WebApiUrl' value in the  <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/AngularStarterkitWeb/src/app/_helpers/izendaintegrate.ts">izendaintegrate.js (Line 17)</a> file with the URL for the Izenda API.
+- Change the 'WebApiUrl' value in the  <a  href="https://github.com/Izenda7Series/AngularStarterkit/blob/master/AngularStarterkitWeb/src/app/_helpers/izendaintegrate.ts">izendaintegrate.ts (Line 17)</a> file with the URL for the Izenda API.
 
 ```javascript
 "WebApiUrl": "http://localhost:9999/api/",

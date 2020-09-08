@@ -110,7 +110,7 @@ namespace WebApi2StarterKit
             }
             finally
             {
-                ctx.Dispose();
+                if (ctx != null) ctx.Dispose();
             }
 
             return ret;
