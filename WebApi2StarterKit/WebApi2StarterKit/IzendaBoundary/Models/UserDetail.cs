@@ -14,6 +14,7 @@ namespace WebApi2StarterKit.IzendaBoundary.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool InitPassword { get; set; }
+        public bool SystemAdmin { get; set; }
         public bool Active { get; set; }
 
         private IList<RoleInfo> _roles;

@@ -46,7 +46,7 @@ namespace WebApi2StarterKit.Providers
             try
             {
                 // in this example application, we do not use the full ActiveDirectory identity features.
-                // That, plus synchroning the users in the configuration DB and in the WebApi
+                // That, plus synchronizing the users in the configuration DB and in the WebApi
                 // authorization DB, allows just to validate the user against the Active Directory.
                 // In case you dont want to synchronize the users and/or not using the authorization DB
                 // while still want to use the Active Directory - you need to implement
@@ -63,13 +63,11 @@ namespace WebApi2StarterKit.Providers
 
             if (user == null || (useAD && !adUser.isValid))
             {
+                // Tip. 
+                // At this point, if the adUser.isValid == true, it is possible to automatically
+                // create the AD user in Izenda DB, if you'd like to.
+                // See the article "Few aspects of Active Directory authentication" at Izenda Confluence board for details
                 string __msg = "The user name or tenant name is incorrect.";
-                if (adUser.isValid)
-                {
-                    adUser.password = context.Password;
-                    await userManager.CreateADUser(adUser, tenant);
-                    __msg = "The user is valid but was not activated.";
-                }
                 context.SetError("invalid_grant", __msg);
                 return;
             }

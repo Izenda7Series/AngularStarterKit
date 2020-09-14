@@ -15,7 +15,7 @@
                 </div>
                 <div *ngIf="model.tenant == null" class="form-group" [ngClass]="{ 'has-error': f.submitted && !isadmin.valid }">
                   <label>Is Admin
-                    <input type="checkbox" class="form-control" name="isadmin" [(ngModel)]="model.isadmin" #isadmin="ngModel" />
+                    <input type="checkbox" class="checkbox" name="isadmin" [(ngModel)]="model.isadmin" #isadmin="ngModel" />
                   </label>
                 </div>
                 <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !selectedrole.valid }">
