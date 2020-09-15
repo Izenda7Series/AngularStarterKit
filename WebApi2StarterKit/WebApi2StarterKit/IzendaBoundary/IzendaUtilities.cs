@@ -159,7 +159,7 @@ namespace WebApi2StarterKit.IzendaBoundary
                 LastName = lastName,
                 FirstName = firstName,
                 TenantDisplayId = izendaTenant != null ? izendaTenant.Name : string.Empty,
-                InitPassword = false
+                InitPassword = false,
                 SystemAdmin = isAdmin
             };
 
