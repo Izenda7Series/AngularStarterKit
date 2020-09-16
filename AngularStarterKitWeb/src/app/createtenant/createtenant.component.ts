@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from '../_services/authentication.service';
-import { AccountService } from '../_services/account.services';
 
 @Component({
   selector: 'app-createtenant',
@@ -19,7 +18,7 @@ export class CreateTenantComponent implements OnInit {
     isAuthenticated: Observable<boolean>;
     canUpdateTenantAndUser: Observable<boolean>;
   
-    constructor(private router: Router, private authService: AuthenticationService, private accountService: AccountService) {
+    constructor(private router: Router, private authService: AuthenticationService) {
          this.isAuthenticated = authService.isAuthenticated();
          this.canUpdateTenantAndUser = authService.canUpdateTenantAndUser();
     }
@@ -35,8 +34,9 @@ export class CreateTenantComponent implements OnInit {
 
       this.loading = true;
 
-      this.accountService.createTenant(this.model.tenantid, this.model.tenantname).subscribe(result =>{
-        if (result === true){
+      const body: string = JSON.stringify({ TenantId: this.model.tenantid, TenantName: this.model.tenantname });
+      this.authService.AppSvcPost('account/createtenant', body).subscribe(result => {
+        if (result === 'success'){
           this.success = 'Tenant has been created successfully';
           this.error = '';
         }else{

@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthenticationService} from './_services/authentication.service';
-import { UserService } from './_services/user.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +31,7 @@ import {
 } from './izendacomponents/index';
 import { IzendaIntegrate } from './_helpers/izendaintegrate';
 import { CreateTenantComponent } from './createtenant/createtenant.component';
+import { CreateUserComponent } from './createuser/createuser.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +55,8 @@ import { CreateTenantComponent } from './createtenant/createtenant.component';
     AdvancedReportPartComponent,
     ReportViewerComponent,
     DashboardViewerComponent,
-    CreateTenantComponent
+    CreateTenantComponent,
+    CreateUserComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +66,6 @@ import { CreateTenantComponent } from './createtenant/createtenant.component';
   ],
   providers: [AuthGuard,
     AuthenticationService,
-    UserService,
     IzendaIntegrate, ],
   bootstrap: [AppComponent]
 })

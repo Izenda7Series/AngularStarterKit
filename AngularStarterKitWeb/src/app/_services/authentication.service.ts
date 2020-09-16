@@ -1,7 +1,13 @@
+/*  AuthenticationService.
+    This demo service provides all the functionality necessary for the front end components to communicate
+    with the authentication application (in our case, it is the WebApi2StarterKit application).
+    The service is responsible for handling the token - related operations
+    as well as for handling the calls that pass the data to the Authentication application
+*/
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 import { ApiEndpointConfig } from '../ApiEndpointConfig';
 import { Router } from '@angular/router';
 
@@ -13,7 +19,7 @@ export class AuthenticationService {
   public token: string;
   public currentUserSubject = new BehaviorSubject<string>(localStorage.getItem('currentUser'));
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
-  public isAdmin = new BehaviorSubject<boolean>(this.hasToken && localStorage.getItem('currentUser') === "IzendaAdmin@system.com");
+  public isAdminSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private httpClient: HttpClient, private router: Router) {
       // set token if saved in local storage
@@ -38,7 +44,7 @@ export class AuthenticationService {
       };
 
       return this.httpClient.post(url, body, httpOptions)
-          .map((response) => {
+          .pipe(map((response) => {
               const token = response && response['access_token'];
               console.log('Integrated access token: ' + token);
               if (token) {
@@ -50,11 +56,12 @@ export class AuthenticationService {
                   // Notify is authenticated
                   this.isAuthenticatedSubject.next(true);
                   this.currentUserSubject.next(username);
+                  this.isAdminSubject.next(this.isAdmin());
                   return true;
               } else {
                   return false;
               }
-          });
+          }));
   }
 
   logout() {
@@ -69,20 +76,24 @@ export class AuthenticationService {
           headers: httpHeaders
       };
 
+      this.common_logout();
       return this.httpClient.post(url, body, httpOptions )
           .subscribe(response => {
-                  localStorage.removeItem('currentUser');
-                  localStorage.removeItem('tokenKey');
-                  localStorage.removeItem('izendatoken');
-
-                  // Notify is not authenticated
-                  this.isAuthenticatedSubject.next(false);
-                  this.currentUserSubject.next(null);
+              // Add token-dependant logout functionality here (optional).
               },
           err => {
               console.log(err);
               });
 
+  }
+  common_logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('tokenKey');
+    localStorage.removeItem('izendatoken');
+    // Notify is not authenticated
+    this.isAdminSubject.next(false);
+    this.isAuthenticatedSubject.next(false);
+    this.currentUserSubject.next(null);
   }
 
   register(tenantname: string, username: string, password: string, confirmpassword: string) {
@@ -95,13 +106,13 @@ export class AuthenticationService {
 
 
       return this.httpClient.post(url, body, httpOptions )
-          .map((response) => {
+          .pipe(map((response) => {
               if (response['status'] >= 200 && response['status'] < 300 ) {
                   return true;
               } else {
                     return false;
               }
-          });
+          }));
   }
 
   getIzendaToken(token: string): void {
@@ -127,6 +138,9 @@ export class AuthenticationService {
   hasToken(): boolean {
       return !!localStorage.getItem('tokenKey');
   }
+  isAdmin(): boolean {
+    return this.hasToken && (localStorage.getItem('currentUser') === "IzendaAdmin@system.com");
+  }
 
   currentUser(): Observable<string> {
       return this.currentUserSubject.asObservable();
@@ -137,6 +151,24 @@ export class AuthenticationService {
   }
 
   canUpdateTenantAndUser(): Observable<boolean> {
-      return this.isAdmin.asObservable();
+      return this.isAdminSubject.asObservable();
+  }
+
+  AppSvcPost(route: string, jsonData: any) {
+    if (route === null || route.trim().length === 0)
+      return;
+
+    const httpHeaders: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
+    const httpOptions = {
+      headers: httpHeaders
+    };
+    let url: string = route;
+    if (!url.toLowerCase().startsWith('http:'))
+      url = this.endPoint + (url.startsWith("/") ? "" : "/") + url;
+    return this.httpClient.post(url, jsonData, httpOptions)
+      .pipe(map(res => (res)));
+  }
+  private get endPoint() {
+    return ApiEndpointConfig.getPath('authAPI');
   }
 }
