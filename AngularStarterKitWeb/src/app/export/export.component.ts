@@ -8,7 +8,6 @@ declare var require: any;
 const IzendaSynergy = require('../../assets/izenda/izenda_ui');
 
 @Component({
-  selector: 'app-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.css']
 })
