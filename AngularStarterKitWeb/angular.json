@@ -31,11 +31,10 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "./src/assets/Izenda/izenda_ui.js",
               "./src/assets/Izenda/izenda_common.js",
-              "./src/assets/Izenda/izenda_vendors.js",
               "./src/assets/Izenda/izenda_locales.js",
-              "./src/assets/Izenda/izenda_worker.js"
+              "./src/assets/Izenda/izenda_vendors.js",
+              "./src/assets/Izenda/izenda_ui.js"
             ]
           },
           "configurations": {
