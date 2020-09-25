@@ -1,7 +1,6 @@
 import { Component, NgModule } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { AuthenticationService } from './_services/authentication.service';
 import { User } from './_models/user';
 import { IzendaIntegrate } from './_helpers/izendaintegrate';
 
@@ -15,8 +14,7 @@ export class AppComponent {
   currentUser: User;
   private previousPath = '';
 
-  constructor(private router: Router, private authenticationService: AuthenticationService, private izItergrate: IzendaIntegrate) {
-    this.authenticationService.currentUser;
+  constructor(private router: Router, private izItergrate: IzendaIntegrate) {
     this.izItergrate.DoIzendaConfig();
   }
 

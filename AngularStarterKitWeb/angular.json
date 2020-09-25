@@ -25,17 +25,15 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./src/assets/Izenda/izenda-ui.css",
               "src/styles.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "./src/assets/Izenda/izenda_ui.js",
-              "./src/assets/Izenda/izenda_common.js",
-              "./src/assets/Izenda/izenda_vendors.js",
-              "./src/assets/Izenda/izenda_locales.js",
-              "./src/assets/Izenda/izenda_worker.js"
+              "./src/assets/izenda/izenda_common.js",
+              "./src/assets/izenda/izenda_locales.js",
+              "./src/assets/izenda/izenda_vendors.js",
+              "./src/assets/izenda/izenda_ui.js"
             ]
           },
           "configurations": {
