@@ -31,6 +31,13 @@
                 <hr />
                 <p>If you want to add "Description" or enable a Module(s) to a newly created tenant, please go to Settings → Tenant Setup and update it.</p> 
             </div>
+            <div>
+                <h4>Tenants</h4>
+                <hr />
+                <ul style="max-height: 150px; overflow-y:auto">
+                  <li *ngFor="let t of tenants">{{t.name}} ({{t.active?'active':'inactive'}})</li>
+                </ul> 
+            </div>
         </div>
     </div>
 </div>

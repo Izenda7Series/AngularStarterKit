@@ -55,6 +55,13 @@
                 <hr />
                 <p>If you want to add "Description" or enable a Module(s) to a newly created user, please go to Settings → User Setup and update it.</p> 
             </div>
+            <div>
+                <h4>Users</h4>
+                <hr />
+                <ul style="max-height: 350px; overflow-y:auto">
+                  <li *ngFor="let u of users">{{u.name}} ({{u.active?'active':'inactive'}})</li>
+                </ul> 
+            </div>
         </div>
     </div>
 </div>
