@@ -16,7 +16,8 @@ export class CreateUserComponent implements OnInit {
     success = '';
     isloading = false;
     public tenants: any[];
-    roles: any[];
+    public roles: any[];
+    public users:any[];
 
     emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"; 
 
@@ -54,6 +55,7 @@ export class CreateUserComponent implements OnInit {
           if (result === 'success') {
             this.success = 'User has been created successfully';
             this.error = '';
+            this.loadUsers();
           } else {
             this.error = 'Failed to create a user, Try again';
             this.success = '';
@@ -70,6 +72,7 @@ export class CreateUserComponent implements OnInit {
     private loadLists() {
       this.loadTenants();
       this.loadRoles();
+      this.loadUsers();
     }
     private loadTenants() {
         this._ias.APIGet("tenant/allTenants").subscribe(result => {
@@ -113,5 +116,23 @@ export class CreateUserComponent implements OnInit {
     public tenantChanged(tenant:any) {
       console.log("tenant:" + (this.model.tenant == null?'null':this.model.tenant.name));
         this.loadRoles();
+        this.loadUsers();
+    }
+    private loadUsers() {
+      this._ias.APIGet('user/all' + (this.model.tenant == null ? '' : '/' + this.model.tenant.id)).subscribe(result => {
+        if (result != null) {
+          this.users = (result as any[]);
+        } else {
+          this.error = 'Failed to retrieve the user list.';
+          this.success = '';
+        }
+        this.isloading = false;
+      },
+        error => {
+          this.error = 'Failed to retrieve the user list.';
+          this.success = '';
+
+          this.isloading = false;
+        });
     }
   }
