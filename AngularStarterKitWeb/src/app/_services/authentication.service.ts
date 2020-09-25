@@ -29,13 +29,13 @@ export class AuthenticationService {
   login(tenantname: string, username: string, password: string): Observable<boolean> {
       const url: string = ApiEndpointConfig.getPath('login');
 
-      const authHttpParams  = new HttpParams()
+      let authHttpParams  = new HttpParams()
           .set('grant_type', 'password')
           .set('username', username)
           .set('password', password);
 
       if (tenantname) {
-          authHttpParams.set('tenant', tenantname);
+        authHttpParams = authHttpParams.append('tenant', tenantname);
       }
       const body = authHttpParams.toString();
 
@@ -139,7 +139,7 @@ export class AuthenticationService {
       return !!localStorage.getItem('tokenKey');
   }
   isAdmin(): boolean {
-    return this.hasToken && (localStorage.getItem('currentUser') === "IzendaAdmin@system.com");
+    return this.hasToken && (localStorage.getItem('currentUser').toLowerCase() === "izendaadmin@system.com");
   }
 
   currentUser(): Observable<string> {

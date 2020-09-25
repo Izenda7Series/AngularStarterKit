@@ -37,12 +37,6 @@ namespace WebApi2StarterKit.Providers
             bool useAD = false;
             ApplicationUserManager.ADUser adUser = new ApplicationUserManager.ADUser();
 
-            /*  Additional information about the Identity system with OWIN
-            introduction: https://docs.microsoft.com/en-us/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity
-            granting flows: https://stackoverflow.com/questions/34562211/what-is-authorizeendpointpath
-            base implementation: https://www.teamscs.com/2016/07/token-based-active-directory-authentication-using-owin/
-             */
-
             try
             {
                 // in this example application, we do not use the full ActiveDirectory identity features.
