@@ -13,27 +13,20 @@ const IzendaSynergy = require('../../assets/izenda/izenda_ui');
 })
 export class ExportComponent implements AfterViewInit {
   currentUserContext: any = {};
-    reportPartId: string;
-    constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    }
+  reportPartId: string;
+  token: string;
+  constructor(private activatedRoute: ActivatedRoute) {
+  }
 
-    ngAfterViewInit() {
-        console.log(this.activatedRoute);
-        this.activatedRoute.params.subscribe((params: Params) => {
-            this.reportPartId = params['id'];
-        });
-
-        this.activatedRoute.queryParams.subscribe((params: Params) => {
-            let token = params['token'];
-            this.currentUserContext = { token: token };
-        });
-
-        console.log(this.reportPartId);
-        console.log(this.currentUserContext);
-        IzendaSynergy.setCurrentUserContext(this.currentUserContext);
-        IzendaSynergy.renderReportPart(document.getElementById('izenda-export-reportpart'), {
-            "id": this.reportPartId,
-            "useQueryParam": true,
-        });
-    }
+  ngAfterViewInit() {
+    console.log(this.activatedRoute);
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.reportPartId = params['id'];
+    });
+    IzendaSynergy.renderReportPart(document.getElementById('izenda-export-reportpart'), {
+      "id": this.reportPartId,
+      "useQueryParam": true,
+    });
+    console.log("Izenda Process | Exporting report id: " + this.reportPartId);
+  }
 }
