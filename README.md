@@ -10,7 +10,7 @@ The AngularStarterkit illustrates the concepts of integrating Izenda into Angula
  :warning: **The AngularStarterkit is designed for demonstration purposes and should not be used as an “as-is” fully-integrated solution. You can use the kit for reference or a baseline but ensure that security and customization meet the standards of your company.**
 
 
- :warning: **The Izenda configuration database script provided is currently configured for version 3.7.0 of Izenda.**
+ :warning: **The Izenda configuration database script provided is currently configured for version 3.10.5 of Izenda.**
 
 ## Installation 
  

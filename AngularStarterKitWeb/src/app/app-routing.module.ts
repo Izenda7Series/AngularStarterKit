@@ -39,6 +39,11 @@ const appRoutes: Routes = [
    { path: 'viewer/reportpart/:id', component: ExportComponent},
    { path: 'report/view/:id', component: ExportreportviewerComponent},
    { path: 'dashboard/edit/:id', component: ExportdashboardviewerComponent},
+
+  // handling the mismatching Izenda main and the sample application routes on the "Izenda" page.
+  { path: 'settings', redirectTo: 'izenda/settings', pathMatch: 'full'},
+  { path: 'dashboard/new', redirectTo: 'izenda/dashboarddesigner', pathMatch: 'full' },
+  { path: 'reportdesigner', redirectTo: 'izenda/reportdesigner', pathMatch: 'full' },
   // otherwise redirect to home
   { path: '**', redirectTo: '' }
 ];

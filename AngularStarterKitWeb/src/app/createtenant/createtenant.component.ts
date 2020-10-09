@@ -19,11 +19,11 @@ export class CreateTenantComponent implements OnInit {
     public tenants: any[];
 
     isAuthenticated: Observable<boolean>;
-    canUpdateTenantAndUser: Observable<boolean>;
+    isAuthAsAdmin: Observable<boolean>;
   
   constructor(private router: Router, private authService: AuthenticationService, private _ias: IzendaApiService) {
          this.isAuthenticated = authService.isAuthenticated();
-         this.canUpdateTenantAndUser = authService.canUpdateTenantAndUser();
+         this.isAuthAsAdmin = authService.isAdmin();
     }
 
     ngOnInit() {
@@ -31,7 +31,7 @@ export class CreateTenantComponent implements OnInit {
     }
 
     createTenant() {
-      if (!this.isAuthenticated || !this.canUpdateTenantAndUser){
+      if (!this.isAuthenticated || !this.isAuthAsAdmin){
         this.router.navigate(['/login']);
       }
 
