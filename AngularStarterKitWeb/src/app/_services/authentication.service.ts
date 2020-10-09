@@ -19,7 +19,7 @@ export class AuthenticationService {
   public token: string;
   public currentUserSubject = new BehaviorSubject<string>(localStorage.getItem('currentUser'));
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
-  public isAdminSubject = new BehaviorSubject<boolean>(false);
+  public isAdminSubject = new BehaviorSubject<boolean>(this.checkIsAdmin());
 
   constructor(private httpClient: HttpClient, private router: Router) {
       // set token if saved in local storage
@@ -56,7 +56,7 @@ export class AuthenticationService {
                   // Notify is authenticated
                   this.isAuthenticatedSubject.next(true);
                   this.currentUserSubject.next(username);
-                  this.isAdminSubject.next(this.isAdmin());
+                  this.isAdminSubject.next(this.checkIsAdmin());
                   return true;
               } else {
                   return false;
@@ -138,20 +138,23 @@ export class AuthenticationService {
   hasToken(): boolean {
       return !!localStorage.getItem('tokenKey');
   }
-  isAdmin(): boolean {
-    return this.hasToken && (localStorage.getItem('currentUser').toLowerCase() === "izendaadmin@system.com");
+  checkIsAdmin(): boolean {
+    let ret: boolean = false;
+    let user: string = localStorage.getItem('currentUser');
+    if (user)
+      ret = this.hasToken && (localStorage.getItem('currentUser').toLowerCase() === "izendaadmin@system.com");
+
+    return ret;
   }
 
+  isAdmin(): Observable<boolean> {
+    return this.isAdminSubject.asObservable();
+  }
   currentUser(): Observable<string> {
       return this.currentUserSubject.asObservable();
   }
-
   isAuthenticated(): Observable<boolean> {
       return this.isAuthenticatedSubject.asObservable();
-  }
-
-  canUpdateTenantAndUser(): Observable<boolean> {
-      return this.isAdminSubject.asObservable();
   }
 
   AppSvcPost(route: string, jsonData: any) {

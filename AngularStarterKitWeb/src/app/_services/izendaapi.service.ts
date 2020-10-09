@@ -1,3 +1,8 @@
+/*  IzendaApiService.
+    This demo service provides all the functionality necessary for the front end components to communicate
+    with the Izenda application services.
+    The service is responsible for handling the API calls and forming the header(s) correctly.
+*/
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';

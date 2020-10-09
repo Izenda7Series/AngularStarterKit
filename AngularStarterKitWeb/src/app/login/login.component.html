@@ -1,3 +1,8 @@
+<!-- Due to Google maps and exporting compatibility issues under Angular 9 and up, we had to move -->
+<!-- the navbar out of it's normal place in app.component  to the individual  components.  We are -->
+<!-- constantly  improving  Izenda  BI  and  this  sample  application  and  will  change  this   -->
+<!-- in time, as we find better solution for this issue. Please stay tuned for the updates.       -->
+<app-navbar></app-navbar>
 <div class="col-md-6 col-md-offset-3">
     <h2>Login</h2>
     <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>

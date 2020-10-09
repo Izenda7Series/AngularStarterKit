@@ -13543,3 +13543,221 @@ WHERE [Disabled] IS NULL;
 
 UPDATE IzendaDBVersion SET Version = '3.10.0';
 
+-- ========================================================
+-- v3.10.4
+-- ========================================================
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaExportQueue]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[IzendaExportQueue]
+	(
+		[Id] [uniqueidentifier] PRIMARY KEY,
+		[ReportID] [uniqueidentifier] NULL,
+		[DashboardID] [uniqueidentifier] NULL,
+		[TenantID] [uniqueidentifier] NULL,
+		[Status] [smallint] NOT NULL,
+		[FilterValueSelection][nvarchar](MAX) NULL,
+		[ExportFileType] [nvarchar](50) NOT NULL, 
+	    	[CreatedByUserId] [uniqueidentifier] NOT NULL,
+		[Name] [nvarchar](512) NOT NULL,
+		[FileName] [nvarchar](512) NULL,
+		[Reapeat] [bit] NOT NULL,
+		[Refreshed] [datetime] NULL,
+		[Deleted] [bit] NULL,
+		[Version] [int] NULL,
+		[Created] [datetime] NULL,
+		[CreatedBy] [nvarchar](256) NULL,
+		[Modified] [datetime] NULL,
+		[ModifiedBy] [nvarchar](256) NULL
+	) ON [PRIMARY]
+END
+
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaExportQueueFilterField]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[IzendaExportQueueFilterField](
+	[Id] [uniqueidentifier] NOT NULL,
+	[FilterFieldId] [uniqueidentifier] NULL,
+	[CommonFilterFieldId] [uniqueidentifier] NULL,
+	[Value] [nvarchar](max) NULL,
+	[OperatorId] [uniqueidentifier] NULL,
+	[OperatorSetting] [nvarchar](100) NULL,
+	[ExportQueueId] [uniqueidentifier] NOT NULL,
+	[Deleted] [bit] NULL,
+	[Version] [int] NULL,
+	[Created] [datetime] NULL,
+	[CreatedBy] [nvarchar](256) NULL,
+	[Modified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](256) NULL
+ CONSTRAINT [PK_IzendaExportQueueFilterField] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+)
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaExportQueueSetting]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[IzendaExportQueueSetting](
+		[Id] [uniqueidentifier] NOT NULL PRIMARY KEY,	
+		[IsEnableAsyncExporting] [bit] NULL,
+		[IsEnableSmartExporting] [bit] NULL,
+		[AsyncExportingInterval] [int] NULL,
+		[AsyncRefreshExportingInterval] [int] NULL,
+		[AsyncArchiveExportingInterval] [int] NULL,
+		[AsyncExportingPath] [nvarchar](256) NULL,
+		[IsEnableAsyncExportingEncryption] [bit] NULL,
+		[ExportQueueFileStorage] [int] NOT NULL,
+		[AzureFileServiceConnectionString] [nvarchar](256) NULL,
+		[AWSS3BucketName] [nvarchar](256) NULL,
+		[AWSAccessKey] [nvarchar](256) NULL,
+		[AWSSecretKey] [nvarchar](256) NULL,
+		[Region] [nvarchar](256) NULL,
+		[Deleted] [bit] NULL,
+		[Version] [int] NULL,
+		[Created] [datetime] NULL,
+		[CreatedBy] [nvarchar](256) NULL,
+		[Modified] [datetime] NULL,
+		[ModifiedBy] [nvarchar](256) NULL
+	)
+END
+
+IF NOT EXISTS (SELECT * FROM IzendaExportQueueSetting WHERE Id = '0E9936B5-6837-4265-96E7-0EB2354D94DC')
+BEGIN
+	INSERT INTO [dbo].[IzendaExportQueueSetting]([Id], [IsEnableAsyncExporting], [IsEnableSmartExporting], [AsyncExportingInterval],[AsyncRefreshExportingInterval],[AsyncArchiveExportingInterval],[AsyncExportingPath],[IsEnableAsyncExportingEncryption],[Version],[Deleted],[ExportQueueFileStorage]) VALUES('0E9936B5-6837-4265-96E7-0EB2354D94DC',0,0,0,0,0,'',0,1,0,0);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaSmartExportSetting]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[IzendaSmartExportSetting](
+		[Id] [uniqueidentifier] NOT NULL PRIMARY KEY,
+		[ReportDashBoard] [nvarchar](256) NOT NULL,
+		[AverageRenderTime] [float] NOT NULL,
+		[ReportPartCount] [smallint] NOT NULL,
+		[Deleted] [bit] NULL,
+		[Version] [int] NULL,
+		[Created] [datetime] NULL,
+		[CreatedBy] [nvarchar](256) NULL,
+		[Modified] [datetime] NULL,
+		[ModifiedBy] [nvarchar](256) NULL
+	)
+END
+
+IF NOT EXISTS (SELECT * FROM IzendaSmartExportSetting WHERE Id = '91010F2E-3C22-46D6-9B4A-1B933D0341EF')
+BEGIN
+	INSERT INTO [dbo].[IzendaSmartExportSetting]([Id],[ReportDashBoard],[AverageRenderTime],[ReportPartCount],[Deleted]) VALUES('91010F2E-3C22-46D6-9B4A-1B933D0341EF','ALL',10, 3,0);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaSmartExportOptions]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[IzendaSmartExportOptions](
+		[Id] [uniqueidentifier] NOT NULL PRIMARY KEY,
+		[ReportPartType] [nvarchar](50) NOT NULL,
+		[GridReportPartType] [nvarchar](50) NULL,
+		[ChartReportPartType] [nvarchar](50) NULL,
+		[IsEmabaedSubReport] [bit] NULL,
+		[IsSeperator] [bit] NULL,
+		[IsCalculatedField] [bit] NULL,
+		[ExportFileType] [nvarchar](50) NULL, 
+		[Deleted] [bit] NULL,
+		[Version] [int] NULL,
+		[Created] [datetime] NULL,
+		[CreatedBy] [nvarchar](256) NULL,
+		[Modified] [datetime] NULL,
+		[ModifiedBy] [nvarchar](256) NULL
+	);
+END
+
+IF NOT EXISTS (SELECT * FROM IzendaSmartExportOptions WHERE Id = '7DED2613-D8A8-4182-AA86-0302E49E7043')
+BEGIN
+	INSERT INTO [dbo].[IzendaSmartExportOptions]( [Id],[ReportPartType],[Deleted],[IsEmabaedSubReport],[IsCalculatedField]) Values ('7DED2613-D8A8-4182-AA86-0302E49E7043','ALL',0,1,1);
+END
+
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaNotification]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[IzendaNotification]
+	(
+		[Id] [uniqueidentifier] PRIMARY KEY,
+		[NotificationMessageID] [smallint] NOT NULL,
+		[UserID] [uniqueidentifier] NOT NULL,
+		[ReplaceValues] [nvarchar](max) NULL,
+		[AssoicatedID] [uniqueidentifier] NULL,
+		[Status] [smallint] NOT NULL,
+		[Deleted] [bit] NULL,
+		[Version] [int] NULL,
+		[Created] [datetime] NULL,
+		[CreatedBy] [nvarchar](256) NULL,
+		[Modified] [datetime] NULL,
+		[ModifiedBy] [nvarchar](256) NULL
+	) ON [PRIMARY]
+END
+
+IF NOT EXISTS (SELECT * FROM IzendaSystemSetting WHERE Id = '9127F51B-502A-4725-8766-8BE2CC78A6BE')
+BEGIN
+	INSERT INTO [IzendaSystemSetting]([Id],[Name],[Value],[Deleted]) VALUES ('9127F51B-502A-4725-8766-8BE2CC78A6BE','NotificationInterval','60',0);
+END
+
+UPDATE IzendaDBVersion SET Version = '3.10.4';
+
+
+-- ========================================================
+-- v3.10.5
+-- ========================================================
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaTenantTenantGroup]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[IzendaTenantTenantGroup](
+        [TenantId] [uniqueidentifier] NOT NULL,
+        [TenantGroupId] [uniqueidentifier] NOT NULL
+    ) ON [PRIMARY]
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IzendaTenantGroup]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[IzendaTenantGroup](
+        [Id] [uniqueidentifier] PRIMARY KEY,
+        [Name] [nvarchar](256) NOT NULL,
+        [Version] [int] NULL,
+        [Created] [datetime] NULL,
+        [CreatedBy] [nvarchar](256) NULL,
+        [Modified] [datetime] NULL,
+        [ModifiedBy] [nvarchar](256) NULL,
+        [Deleted] [bit] NULL
+    ) ON [PRIMARY]
+END
+
+IF EXISTS (
+    SELECT 1
+    FROM sys.indexes AS si
+    JOIN sys.objects AS so on si.object_id=so.object_id
+    JOIN sys.schemas AS sc on so.schema_id=sc.schema_id
+    WHERE 
+        so.name ='IzendaTenantTenantGroup' /* Table */
+        AND si.name='IX_TenantTenantGroup_TenantId' /* Index */
+)
+    PRINT 'IX_TenantTenantGroup_TenantId exists!'
+ELSE
+    CREATE NONCLUSTERED INDEX [IX_TenantTenantGroup_TenantId] ON [dbo].[IzendaTenantTenantGroup]
+    (
+        [TenantId] ASC
+    ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+;
+
+IF EXISTS (
+    SELECT 1
+    FROM sys.indexes AS si
+    JOIN sys.objects AS so on si.object_id=so.object_id
+    JOIN sys.schemas AS sc on so.schema_id=sc.schema_id
+    WHERE 
+        so.name ='IzendaTenantTenantGroup' /* Table */
+        AND si.name='IX_TenantTenantGroup_TenantGroupId' /* Index */
+)
+    PRINT 'IX_TenantTenantGroup_TenantGroupId exists!'
+ELSE
+    CREATE NONCLUSTERED INDEX [IX_TenantTenantGroup_TenantGroupId] ON [dbo].[IzendaTenantTenantGroup]
+    (
+        [TenantGroupId] ASC
+    ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+;
+
+UPDATE IzendaDBVersion SET Version = '3.10.5';
+

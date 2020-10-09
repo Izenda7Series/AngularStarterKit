@@ -22,7 +22,7 @@ export class CreateUserComponent implements OnInit {
     emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"; 
 
     isAuthenticated: Observable<boolean>;
-    canUpdateTenantAndUser: Observable<boolean>;
+    isAuthAsAdmin: Observable<boolean>;
 
     constructor(private router: Router, private authService: AuthenticationService, private _ias: IzendaApiService) {
     }
@@ -35,12 +35,12 @@ export class CreateUserComponent implements OnInit {
       this.model.firstname = '';
       this.model.lastname = '';
       this.model.selectedrole = null;
-      this.canUpdateTenantAndUser = this.authService.canUpdateTenantAndUser();
+      this.isAuthAsAdmin = this.authService.isAdmin();
       this.isAuthenticated = this.authService.isAuthenticated();
     }
 
     createUser() {
-      if (!this.isAuthenticated || !this.canUpdateTenantAndUser){
+      if (!this.isAuthenticated || !this.isAuthAsAdmin){
         this.router.navigate(['/login']);
       }
 
