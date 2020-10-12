@@ -109,15 +109,15 @@ export class IzendaIntegrate {
         // debugger;
         this.setContext();
         IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part1'), {
-            id: '[your 1st report part id]',
+            id: 'f565f05e-a560-47fe-821d-3b060604ab30', // your 1st report part id]
         });
 
         IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part2'), {
-            id: '[your 2nd report part id]',
+            id: 'b94cfd1c-1e29-4532-8230-3dae45f71d23', // your 2nd report part id]
         });
 
         IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part3'), {
-            id: '[your 3rd report part id]',
+            id: 'da94c39c-734d-4313-a47b-4f0cd85e9014' // your 3rd report part id]
         });
 
     }
