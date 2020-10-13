@@ -5,189 +5,198 @@ import '../../assets/izenda/izenda_locales';
 import '../../assets/izenda/izenda_vendors';
 declare var require: any;
 const IzendaSynergy = require('../../assets/izenda/izenda_ui');
+import { ApiEndpointConfig } from '../ApiEndpointConfig';
 
 @Injectable()
 export class IzendaIntegrate {
 
-    constructor(private router: Router) {
-    }
+  constructor(private router: Router) {
+  }
 
-    DoIzendaConfig(): void {
-        IzendaSynergy.config({
-            WebApiUrl: 'http://localhost:9999/api/',
-            BaseUrl: '/',
-            RootPath: '/assets/izenda',
-            CssFile: 'izenda-ui.css',
-            Routes: {
-                ReportDesigner: 'reportdesigner',
-                Report: 'report',
-                ReportViewer: 'reportviewer',
-                ReportViewerPopup: 'reportviewerpopup',
-                Viewer: 'viewer',
-                Dashboard: 'dashboard',
-                New: 'new',
-                Settings: 'settings',
-                Account: 'account',
-                MyProfile: 'myprofile',
-            },
-            Timeout: 3600,
-            NeedToEncodeUrl: false,
-            OnReceiveUnauthorizedResponse: this.redirectToLoginPage,
-        });
-    }
+  DoIzendaConfig(): void {
+    IzendaSynergy.config({
+      WebApiUrl: ApiEndpointConfig.getPath('izendaAPI'),
+      BaseUrl: '/',
+      RootPath: '/assets/izenda',
+      CssFile: 'izenda-ui.css',
+      Routes: {
+        ReportDesigner: 'reportdesigner',
+        Report: 'report',
+        ReportViewer: 'reportviewer',
+        ReportViewerPopup: 'reportviewerpopup',
+        Viewer: 'viewer',
+        Dashboard: 'dashboard',
+        New: 'new',
+        Settings: 'settings',
+        Account: 'account',
+        MyProfile: 'myprofile',
+      },
+      Timeout: 3600,
+      NeedToEncodeUrl: false,
+      OnReceiveUnauthorizedResponse: this.redirectToLoginPage,
+    });
+  }
 
-    redirectToLoginPage() {
-        console.log('Current user is unauthorized to access Izenda function. Navaigate to login page');
-        this.router.navigate(['/login']);
-    }
+  redirectToLoginPage() {
+    console.log('Current user is unauthorized to access Izenda function. Navaigate to login page');
+    this.router.navigate(['/login']);
+  }
 
-    setContext(): void {
-        const currentUserContext = {
-            token: localStorage.getItem('izendatoken')
-        };
-        IzendaSynergy.setCurrentUserContext(currentUserContext);
-    }
+  setContext(): void {
+    const currentUserContext = {
+      token: localStorage.getItem('izendatoken')
+    };
+    IzendaSynergy.setCurrentUserContext(currentUserContext);
+  }
 
-    /* Izenda Function */
+  /* Izenda Function */
 
-    RenderIzenda() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.render(dom);
-        return dom;
-    }
+  RenderIzenda() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.render(dom);
+    return dom;
+  }
 
-    RenderIzendaSettings() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderSettingPage(dom);
-        return dom;
-    }
+  RenderIzendaSettings() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderSettingPage(dom);
+    return dom;
+  }
 
-    RenderReportList() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderReportPage(dom);
-        return dom;
-    }
+  RenderReportList() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderReportPage(dom);
+    return dom;
+  }
 
-    RenderReportDesigner(): any {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderReportDesignerPage(dom);
-        return dom;
-    }
+  RenderReportDesigner(): any {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderReportDesignerPage(dom);
+    return dom;
+  }
 
-    RenderReportViewer() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderReportViewerPage(dom, '[your report id]');
-        return dom;
-    }
+  RenderReportViewer() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderReportViewerPage(dom, '[your report id]');
+    return dom;
+  }
 
-    RenderReportCustomizedFilterViewer() {
-        this.setContext();
-        const filtersObj: any = {
-            filters: [],
-            overridingFilterValue:
-            {
-                // filter object to pass to api
-                // override filter value at position 1 which is applying on current report, change >30 to >50
-                p1value: 50,
-                // override filter value at position 2 which is applying on current report
-                // change beetween (20:50) to (30:40)
-                p2value: '30;#40'
-            }
-        };
+  RenderReportCustomizedFilterViewer() {
+    this.setContext();
+    const filtersObj: any = {
+      filters: [],
+      overridingFilterValue:
+      {
+        // filter object to pass to api
+        // override filter value at position 1 which is applying on current report, change >30 to >50
+        p1value: 50,
+        // override filter value at position 2 which is applying on current report
+        // change beetween (20:50) to (30:40)
+        p2value: '30;#40'
+      }
+    };
 
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderReportViewerPage(dom, '[your report id]', filtersObj);
-        return dom;
-    }
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderReportViewerPage(dom, '[your report id]', filtersObj);
+    return dom;
+  }
 
-    RenderReportParts() {
-        // debugger;
-        this.setContext();
-        IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part1'), {
-            id: 'f565f05e-a560-47fe-821d-3b060604ab30', // your 1st report part id]
-        });
+  RenderReportParts() {
+    // debugger;
+    this.setContext();
+    IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part1'), {
+      id: 'f565f05e-a560-47fe-821d-3b060604ab30', // your 1st report part id]
+    });
 
-        IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part2'), {
-            id: 'b94cfd1c-1e29-4532-8230-3dae45f71d23', // your 2nd report part id]
-        });
+    IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part2'), {
+      id: 'b94cfd1c-1e29-4532-8230-3dae45f71d23', // your 2nd report part id]
+    });
 
-        IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part3'), {
-            id: 'da94c39c-734d-4313-a47b-4f0cd85e9014' // your 3rd report part id]
-        });
+    IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part3'), {
+      id: 'da94c39c-734d-4313-a47b-4f0cd85e9014' // your 3rd report part id]
+    });
 
-    }
+  }
 
-    UpdateResultReportPart(reportPartId: string, overridingFilterValue: any, containerId: string) {
-        this.setContext();
-        IzendaSynergy.renderReportPart(document.getElementById(containerId), {
-            id: reportPartId,
-            overridingFilterValue,
-        });
-    }
+  UpdateResultReportPart(reportPartId: string, overridingFilterValue: any, containerId: string) {
+    this.setContext();
+    IzendaSynergy.renderReportPart(document.getElementById(containerId), {
+      id: reportPartId,
+      overridingFilterValue,
+    });
+  }
 
-    RenderSingleReportPart(reportPartId: string, containerId: string) {
-        this.setContext();
-        IzendaSynergy.renderReportPart(document.getElementById(containerId), {
-            id: reportPartId
-        });
-    }
+  RenderSingleReportPart(reportPartId: string, containerId: string) {
+    this.setContext();
+    IzendaSynergy.renderReportPart(document.getElementById(containerId), {
+      id: reportPartId
+    });
+  }
 
-    RenderDashboard() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderDashboardPage(dom);
-        return dom;
-    }
+  RenderDashboard() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderDashboardPage(dom);
+    return dom;
+  }
 
-    RenderDashboardDesigner() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderNewDashboardPage(dom);
-        return dom;
-    }
+  RenderDashboardDesigner() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderNewDashboardPage(dom);
+    return dom;
+  }
 
-    RenderDashboardViewer() {
-        this.setContext();
-        const dom = document.getElementById('izenda-root');
-        IzendaSynergy.renderDashboardViewerPage(dom, '[your dashboard id]');
-        return dom;
-    }
+  RenderDashboardViewer() {
+    this.setContext();
+    const dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderDashboardViewerPage(dom, '[your dashboard id]');
+    return dom;
+  }
 
-    DestroyDom(dom: any) {
-        this.setContext();
-        IzendaSynergy.unmountComponent(dom);
-    }
+  RenderExportManager() {
+    const token = localStorage.getItem("izendatoken");
+    IzendaSynergy.setCurrentUserContext({ token: token });
+    let dom = document.getElementById('izenda-root');
+    IzendaSynergy.renderExportManagerPage(dom);
+    return dom;
+  }
 
-    /* Izenda Helper Function */
+  DestroyDom(dom: any) {
+    this.setContext();
+    IzendaSynergy.unmountComponent(dom);
+  }
 
-    AutoHideIzenaProgressBar() {
-        this.HideIzenaProgressBar('izenda-root', 'progressLoader');
-    }
+  /* Izenda Helper Function */
 
-    HideIzenaProgressBar(targetId: string, progressBarId: string) {
-        // select the target node
-        const target = document.getElementById(targetId);
+  AutoHideIzenaProgressBar() {
+    this.HideIzenaProgressBar('izenda-root', 'progressLoader');
+  }
 
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                const progressBar = document.getElementById(progressBarId);
-                if (progressBar) {
-                    progressBar.style.display = 'none';
-                }
-            });
-        });
+  HideIzenaProgressBar(targetId: string, progressBarId: string) {
+    // select the target node
+    const target = document.getElementById(targetId);
 
-        // configuration of the observer:
-        const config = { attributes: true, childList: true, characterData: true };
-        if (target) {
-            // pass in the target node, as well as the observer options
-            observer.observe(target, config);
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        const progressBar = document.getElementById(progressBarId);
+        if (progressBar) {
+          progressBar.style.display = 'none';
         }
+      });
+    });
+
+    // configuration of the observer:
+    const config = { attributes: true, childList: true, characterData: true };
+    if (target) {
+      // pass in the target node, as well as the observer options
+      observer.observe(target, config);
     }
+  }
 }
 

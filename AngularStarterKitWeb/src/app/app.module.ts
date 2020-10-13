@@ -32,6 +32,7 @@ import {
 import { IzendaIntegrate } from './_helpers/izendaintegrate';
 import { CreateTenantComponent } from './createtenant/createtenant.component';
 import { CreateUserComponent } from './createuser/createuser.component';
+import { ExportManagerComponent } from './izendacomponents/exportmanager.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { CreateUserComponent } from './createuser/createuser.component';
     ReportViewerComponent,
     DashboardViewerComponent,
     CreateTenantComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    ExportManagerComponent
   ],
   imports: [
     BrowserModule,
