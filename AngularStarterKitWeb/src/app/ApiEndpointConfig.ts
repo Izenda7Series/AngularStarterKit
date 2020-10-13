@@ -3,7 +3,7 @@ export class ApiEndpointConfig {
         // The following line defines the URL to the authentication application (the WebApi2StarterKit or your application)
         const apiEndPoint = 'http://localhost:3358/';
         // The following line defines the URL to the IzendaAPI
-        const izendaApiEndPoint = 'http://localhost:3106/';
+        const izendaApiEndPoint = 'http://localhost:9999/';
         switch (value) {
             case 'register':
                 return apiEndPoint + 'api/Account/Register';
