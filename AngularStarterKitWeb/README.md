@@ -1,4 +1,4 @@
-# Izenda AngularStarterKit (Unsupported)
+# Izenda AngularStarterKit
 
 ## Overview
 The AngularStarterKit illustrates the concepts of integrating Izenda into Angular applications.
