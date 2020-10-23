@@ -161,7 +161,8 @@ export class AuthenticationService {
     if (route === null || route.trim().length === 0)
       return;
 
-    const httpHeaders: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
+    let token = localStorage.getItem('tokenKey');
+    const httpHeaders: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' , 'Authorization': 'Bearer ' + token });
     const httpOptions = {
       headers: httpHeaders
     };
