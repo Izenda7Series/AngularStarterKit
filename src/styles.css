@@ -4,8 +4,10 @@
 
 body {
     height:100vh;
+
     padding-top: 50px !important;
     padding-bottom: 40px !important;
+
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -15,8 +17,8 @@ body {
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
+/* Override the default bootstrap behavior where horizontal description lists
+   will truncate terms that are too long to fit in the left column
 */
 .dl-horizontal dt {
     white-space: normal;
@@ -31,6 +33,21 @@ body {
     height: 100%;
     min-height: 100%;
 }
+
+.izenda-export {
+  height: 90vh !important;
+  width: 90vw !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+  margin-top: -50px !important;
+  margin-bottom: -40px !important;
+  padding: 0 !important;
+}
+
+#izenda-export-reportpart>.izenda {
+  background-color: transparent !important;
+}
+
 .quarter-screen{
     float: left;
     width: 40%;
@@ -48,9 +65,7 @@ body {
     background-color: white;
 }
 
-#izenda-export-reportpart>.izenda {
-    background-color: transparent !important;
-}
+
 
 
 #izenda-root .izenda .collapsible-list-items.panel-group .panel {
