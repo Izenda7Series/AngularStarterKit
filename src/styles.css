@@ -4,10 +4,8 @@
 
 body {
     height:100vh;
-
     padding-top: 50px !important;
     padding-bottom: 40px !important;
-
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -64,9 +62,6 @@ body {
     margin-left: 20px;
     background-color: white;
 }
-
-
-
 
 #izenda-root .izenda .collapsible-list-items.panel-group .panel {
     border-radius: 0;
