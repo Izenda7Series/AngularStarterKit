@@ -35,13 +35,15 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
 
+  // report opened in a new window
+  { path: 'report/view/:id', component: ReportViewerComponent, canActivate: [AuthGuard] },
+
   // create user / tenant
   { path: 'createuser', component: CreateUserComponent, canActivate: [AuthGuard] },
   { path: 'createtenant', component: CreateTenantComponent, canActivate: [AuthGuard] },
 
   // export route
   { path: 'viewer/reportpart/:id', component: ExportComponent },
-  { path: 'report/view/:id', component: ExportreportviewerComponent },
   { path: 'dashboard/edit/:id', component: ExportdashboardviewerComponent },
 
   // handling the mismatching Izenda main and the sample application routes on the "Izenda" page.
