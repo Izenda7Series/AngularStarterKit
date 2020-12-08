@@ -79,10 +79,10 @@ export class IzendaIntegrate {
     return dom;
   }
 
-  RenderReportViewer() {
+  RenderReportViewer(reportId = null, filters = null) {
     this.setContext();
     const dom = document.getElementById('izenda-root');
-    IzendaSynergy.renderReportViewerPage(dom, '[your report id]');
+    IzendaSynergy.renderReportViewerPage(dom, reportId || '[your report id]', filters);
     return dom;
   }
 
@@ -110,15 +110,15 @@ export class IzendaIntegrate {
     // debugger;
     this.setContext();
     IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part1'), {
-      id: 'f565f05e-a560-47fe-821d-3b060604ab30', // your 1st report part id]
+      id: 'fb9703eb-3fc2-4fd5-b95b-9509b08e5990' // your 1st report part id]
     });
 
     IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part2'), {
-      id: 'b94cfd1c-1e29-4532-8230-3dae45f71d23', // your 2nd report part id]
+      id: '7d763799-062f-42db-a2a7-02370010147c', // your 2nd report part id]
     });
 
     IzendaSynergy.renderReportPart(document.getElementById('izenda-report-part3'), {
-      id: 'da94c39c-734d-4313-a47b-4f0cd85e9014' // your 3rd report part id]
+      id: '8bd60556-dbfc-41e3-b87b-205b4851fe84' // your 3rd report part id]
     });
 
   }
